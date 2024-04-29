@@ -1,7 +1,7 @@
 # NVIDIA Home assignment
 # Overview
 This system is designed to parse input files from a specified directory, <br>
-validate and process the data, and subsequently store it in both a JSON formatted file in the file system and a structured SQLite database.
+validate ,process and subsequently store the data in both a JSON formatted file in the file system and a structured SQLite database.
 
 # Task 1: Data Parsing and Formatting - Extractor service
 1. **Data Loading** - Load all the files in `input_files` folder into a pandas DataFrame, facilitating easy validation and preparation across different data sources. For larger datasets, the loading process can be batched to manage memory efficiently.

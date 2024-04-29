@@ -108,9 +108,9 @@ def run_extractor(input_path: str, output_path: str, schema_path: str, batch_siz
                                                                      filename.endswith(".log") or
                                                                      filename.endswith(".json")]
     # Get only files which not processed yet - Recovery Process
-    filtered_filenames = FileUtilsFactory.get_filename_which_changed_after_last_file(logger, filenames_at_input_path,
-                                                                                     input_path,
-                                                                                     output_filenames)
+    filtered_filenames = FileUtilsFactory.get_file_timestamp_which_changed_after_last_file(logger, filenames_at_input_path,
+                                                                                           input_path,
+                                                                                           output_filenames)
     if not filtered_filenames:
         logger.info("Not found files to process")
         exit()

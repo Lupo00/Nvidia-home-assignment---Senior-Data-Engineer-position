@@ -42,7 +42,7 @@ class FileUtilsFactory:
         return pd.concat(dataframes, ignore_index=True)
 
     @staticmethod
-    def get_filename_which_changed_after_last_file(logger: NvidiaLogger, filenames: [str], filenames_path: str, sub_group_of_filesnames: [str]) -> [
+    def get_file_timestamp_which_changed_after_last_file(logger: NvidiaLogger, filenames: [str], filenames_path: str, sub_group_of_filesnames: [str]) -> [
         str]:
         last_file_timestamp = 0
 
