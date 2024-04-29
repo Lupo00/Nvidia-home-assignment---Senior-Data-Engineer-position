@@ -1,7 +1,7 @@
 # NVIDIA Home assignment
 # Overview
 This system is designed to parse input files from a specified directory, <br>
-validate ,process and subsequently store the data in both a JSON formatted file in the file system and a structured SQLite database.
+validate (parameter - type & size & name) ,process and subsequently store (uniquness data) in both a JSON formatted file in the file system and a structured SQLite database.
 
 # Task 1: Data Parsing and Formatting - Extractor service
 1. **Data Loading** - Load all the files in `input_files` folder into a pandas DataFrame, facilitating easy validation and preparation across different data sources. For larger datasets, the loading process can be batched to manage memory efficiently.
@@ -13,12 +13,13 @@ validate ,process and subsequently store the data in both a JSON formatted file 
 2. Log parser - we assume the pattern of logs is | key:value | when "|" is seperate between parameters
 
 ### Tests
-Created 2 static tests and 1 dynamic
+Created 3 static tests and 1 dynamic
 1. check the example which provided
 2. check the failure recovery
 3. Dynamic test - creating files dynamiclly based on the schema files,  and other parameter (min/max rows in file and number of file). <br>
                   for every invalid row (size, type, or  not exists) we will count it and for every file we generate failure counter file. <br>
                   the test support in xml, csv, json.
+4. check the validation of row without "mandatory" column (it will be remove and write to log)
                   
 
 <img src="readme_images/task1.png" alt="Alt Text" width="800"  height="150"/>
