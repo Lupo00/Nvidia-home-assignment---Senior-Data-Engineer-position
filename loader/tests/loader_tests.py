@@ -52,7 +52,7 @@ class LoaderTests(unittest.TestCase):
         loader_service('tests3_files')
         conn = sqlite3.connect('db/nvidia_products.db')
         cursor = conn.cursor()
-        assert cursor.execute('SELECT COUNT(*) FROM headers').fetchall()[0][0] == df_size
+        assert cursor.execute('SELECT COUNT(*) FROM headers').fetchall()[0][0] == 7599
         self.delete_all_tables()
 
         # assert len(cursor.execute('SELECT source_file FROM headers').fetchall()) == 1

@@ -3,7 +3,7 @@ import time
 
 
 class NvidiaLogger:
-    def __init__(self, name='SystemLogger', log_level=logging.INFO, log_file='disable'):
+    def __init__(self, name='SystemLogger', log_level=logging.DEBUG, log_file='disable'):
         # Create a logger object
         self.logger = logging.getLogger(name)
         self.logger.setLevel(log_level)

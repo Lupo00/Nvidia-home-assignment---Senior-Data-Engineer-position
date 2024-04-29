@@ -1,9 +1,13 @@
 import argparse
+import json
 import os
 
 import numpy as np
 import pandas as pd
 import yaml
+
+if "logs" not in os.listdir():
+    os.mkdir("logs")
 
 from common.file_utils.FileUtils import FileUtils
 from common.file_utils.FileUtilsFactory import FileUtilsFactory
@@ -28,7 +32,7 @@ def validate_column_types_and_content(df: pd.DataFrame, target_col: str, col_sch
     if col_schema['type'] == 'int':
         df[target_col] = pd.to_numeric(df[target_col], errors='coerce')
     elif col_schema['type'] == 'date':
-        df[target_col] = pd.to_datetime(df[target_col], errors='coerce')
+        df[target_col] = pd.to_datetime(df[target_col], errors='coerce').astype(str)
 
 
 def mark_invalid_rows(df: pd.DataFrame, target_col: str, col_schema: dict, error_messages: dict) -> None:
@@ -127,7 +131,18 @@ def run_extractor(input_path: str, output_path: str, schema_path: str, batch_siz
             df = FileUtilsFactory.load_files_to_df(input_path, batch_filenames, True)
             df = reformat_and_validate_dataframe(schema_path, df)
             last_time_file_modified = FileUtils.get_last_file_timestamp_modification(input_path, batch_filenames)
-            df.to_json(f"{output_path}/partition_{last_time_file_modified}.json", orient='records')
+
+            headers = [col for col in df.columns if not col.startswith('atter')]
+            json_data = []
+            for _, row in df.iterrows():
+                row_json = {
+                    "headers": {col: row[col] for col in headers},
+                    "dynamic": {col: row[col] for col in df.columns if col not in headers}
+                }
+                json_data.append(row_json)
+            with open(f"{output_path}/partition_{last_time_file_modified}.json", 'w') as f:
+                json.dump(json_data, f, indent=4)
+
             system_logger.info(f"Batch of filenames {batch_filenames} writen to  {output_path}/partition_{last_time_file_modified}.json ")
 
         except Exception as e:
