@@ -1,8 +1,5 @@
 import logging
-import os
-import sys
 import time
-from functools import wraps
 
 
 class NvidiaLogger:
@@ -13,7 +10,6 @@ class NvidiaLogger:
 
         # Ensure no other handlers are added
         if not self.logger.hasHandlers():
-            # Create file handler which logs even debug messages
             if log_file == 'disable':
                 fh = logging.NullHandler()
             elif log_file == 'std':
@@ -22,17 +18,9 @@ class NvidiaLogger:
                 fh = logging.FileHandler(log_file)
 
             fh.setLevel(log_level)
-
-            # Create formatter
             formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-
-            # Add formatter to fh
             fh.setFormatter(formatter)
-
-            # Add fh to logger
             self.logger.addHandler(fh)
-
-        # Log initial system information
 
 
     def debug(self, message):
@@ -72,17 +60,13 @@ class NvidiaLogger:
         return self.logger.level == logging.DEBUG
 
     def mark_start_and_end_run(self, param):
-        """Decorator to log the execution time of a method."""
-
+        """Decorator to log start and end of method."""
         def decorator(func):
-
             def wrapper(*args, **kwargs):
-                self.logger.info(f"-----------------------------------------------------------------------------------")
                 self.logger.info(f"----------------------------------- Start to run {param} -----------------------------------")
 
                 result = func(*args, **kwargs)  # Execute the function
                 self.logger.info(f"----------------------------------- End to run {param} -----------------------------------")
-                self.logger.info(f"-----------------------------------------------------------------------------------")
                 self.logger.info("")
                 return result
 

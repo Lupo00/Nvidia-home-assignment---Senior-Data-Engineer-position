@@ -1,7 +1,5 @@
 import os
 
-import pandas as pd
-
 from common.marker import this_method_is_only_for_test
 
 
@@ -10,7 +8,7 @@ class FileUtils:
         raise NotImplementedError("Subclasses must implement read_file method")
 
     @staticmethod
-    def get_last_file_modification(filenames_dir: str, filenames: [str]) -> int:
+    def get_last_file_timestamp_modification(filenames_dir: str, filenames: [str]) -> int:
         last_modified = filenames[0]
         for file in filenames:
             if os.path.getmtime(f'{filenames_dir}/{last_modified}') <  os.path.getmtime(f'{filenames_dir}/{file}'):
