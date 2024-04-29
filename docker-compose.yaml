@@ -1,0 +1,19 @@
+version: '3.8'
+services:
+  extractor-service:
+    build:
+      context: .
+      dockerfile: extractor/extractor.dockerfile
+
+    volumes:
+      - ./extractor/tests/test_files/test1_files/source:/usr/src/app/source_files
+      - ./formated_files:/usr/src/app/output_files
+      - ./extractor/logs:/usr/src/app/logs
+  loader-service:
+    build:
+      context: .
+      dockerfile: loader/loader.dockerfile
+    volumes:
+      - ./loader/db:/usr/src/app/db
+      - ./formated_files:/usr/src/app/input_files
+      - ./loader/logs:/usr/src/app/logs
