@@ -65,7 +65,7 @@ To facilitate usage, a Docker Compose file has been provided. Follow these steps
     docker-compose up [SERVICE_NAME]                     ## SERVICE_NAME = [extractor-service, loader-service]
     ```
 
-The outputs will be available at the following locations:
+The outputs will be available at the following locations (you can change it at `docker-compose.yaml`:
 
 - `formated_files`: Contains JSON-formatted files.
 - `loader/db`: Contains the SQLite local database file.
