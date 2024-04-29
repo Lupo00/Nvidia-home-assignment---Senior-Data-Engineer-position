@@ -10,20 +10,20 @@ from common.file_utils.FileUtilsFactory import FileUtilsFactory
 from common.logger.nvidia_logger import NvidiaLogger
 
 corrupted_files_logs = NvidiaLogger(name="corrupted_files", log_file="logs/corrupted_files.log")
+system_logger = NvidiaLogger(log_file='logs/system.log')
 
 
-def is_column_not_presence(df: pd.DataFrame, col_schema: dict, target_col: str, supported_headers: set,
-                           logger: NvidiaLogger):
+def is_column_not_presence(df: pd.DataFrame, is_mandatory: bool, target_col: str, supported_headers: set) -> bool:
     """Validate presence of required columns in DataFrame."""
     if not supported_headers:
-        if 'mandatory' in col_schema:
+        if is_mandatory:
             df['failed'] = True
-        logger.error(f"{target_col} does not exist in the file")
+        system_logger.error(f"{target_col} does not exist in the file")
         return True
     return False
 
 
-def validate_column_types_and_content(df: pd.DataFrame, target_col: str, col_schema: dict):
+def validate_column_types_and_content(df: pd.DataFrame, target_col: str, col_schema: dict) -> None:
     """Validate the data types of DataFrame columns based on schema"""
     if col_schema['type'] == 'int':
         df[target_col] = pd.to_numeric(df[target_col], errors='coerce')
@@ -31,7 +31,7 @@ def validate_column_types_and_content(df: pd.DataFrame, target_col: str, col_sch
         df[target_col] = pd.to_datetime(df[target_col], errors='coerce')
 
 
-def mark_invalid_rows(df: pd.DataFrame, target_col: str, col_schema: dict, error_messages:dict):
+def mark_invalid_rows(df: pd.DataFrame, target_col: str, col_schema: dict, error_messages: dict) -> None:
     """Mark invalid rows in the DataFrame based on the schema."""
     condition = (df[target_col].isna() |
                  (df[target_col] == '') |
@@ -44,22 +44,23 @@ def mark_invalid_rows(df: pd.DataFrame, target_col: str, col_schema: dict, error
             message = f"The value of {target_col} ({row[target_col]}) is empty or in incorrect type.\n"
         if 'mandatory' in col_schema and col_schema['mandatory']:
             if idx not in error_messages:
-                error_messages[idx] = [(row['source_file'],message)]
+                error_messages[idx] = [(row['source_file'], message)]
             else:
-                error_messages[idx].append((row['source_file'],message))
+                error_messages[idx].append((row['source_file'], message))
             df.loc[idx, 'failed'] = True
         else:
             df.loc[idx, target_col] = np.nan
 
 
-def filter_irrelevant_rows_and_columns(df, config):
+def filter_irrelevant_rows_and_columns(df:pd.DataFrame, config:dict) -> pd.DataFrame:
     df = df[df['failed'] == False]
     columns_to_remove = [col for col in df.columns if col not in config.keys() and not col.startswith("atter")]
     corrupted_files_logs.info(f"We remove the columns {columns_to_remove} from the files")
     df.drop(columns=columns_to_remove, inplace=True)
     return df
 
-def log_errors(error_messages):
+
+def clarify_log_errors(error_messages: dict) -> None:
     error_by_file = {}
     for idx, messages in error_messages.items():
         for message in messages:
@@ -73,10 +74,11 @@ def log_errors(error_messages):
                 corrupted_files_logs.debug(f"In {filename} file - one row in have this issues : {row_error_desc}")
         corrupted_files_logs.info(f"In {filename} we have {len(content.keys())} rows which corrupted")
     if not corrupted_files_logs.is_on_debug_mode():
-        corrupted_files_logs.info('To get information about every row (values and error description) you should change log level to DEBUG')
+        corrupted_files_logs.info(
+            'To get information about every row (values and error description) you should change log level to DEBUG')
 
 
-def reformat_and_validate_dataframe(logger: NvidiaLogger, schema_path: str, df: pd.DataFrame) -> pd.DataFrame:
+def reformat_and_validate_dataframe(schema_path: str, df: pd.DataFrame) -> pd.DataFrame:
     with open(schema_path, 'r') as yaml_file:
         config = yaml.safe_load(yaml_file)
 
@@ -86,46 +88,50 @@ def reformat_and_validate_dataframe(logger: NvidiaLogger, schema_path: str, df: 
         supported_headers = set(col_schema.get("supported", []))
         supported_headers.add(target_col)
         supported_headers &= set(df.columns)
-
-        if is_column_not_presence(df, col_schema, target_col, supported_headers, logger):
+        is_col_mandatory = 'mandatory' in col_schema
+        if is_column_not_presence(df, is_col_mandatory, target_col, supported_headers):
             continue
 
-        df[target_col] = df[supported_headers].bfill(axis=1).iloc[:, 0]
-        validate_column_types_and_content(df, target_col, col_schema,)
+        df[target_col] = df[supported_headers].bfill(axis=1).iloc[:, 0] # Merge all the supported columns to one expected col
+        validate_column_types_and_content(df, target_col, col_schema, )
         mark_invalid_rows(df, target_col, col_schema, error_messages)
 
-    log_errors(error_messages)
+    clarify_log_errors(error_messages)
     df = filter_irrelevant_rows_and_columns(df, config)
     return df
 
-def run_extractor(input_path: str, output_path: str, schema_path: str, batch_size: int = 10,
-                  log_path: str = 'std') -> None:
-    logger = NvidiaLogger(log_file=log_path)
+@corrupted_files_logs.mark_start_and_end_run("extractor service")
+@system_logger.log_execution_time
+def run_extractor(input_path: str, output_path: str, schema_path: str, batch_size: int = 10) -> None:
     filenames_at_input_path = os.listdir(input_path)
     output_filenames = os.listdir(output_path)
-    output_filenames = [filename for filename in output_filenames if filename.endswith(".xml") or
-                                                                     filename.endswith(".csv") or
-                                                                     filename.endswith(".log") or
-                                                                     filename.endswith(".json")]
+    supported_output_filenames = [filename for filename in output_filenames if filename.endswith(".xml") or
+                        filename.endswith(".csv") or
+                        filename.endswith(".log") or
+                        filename.endswith(".json")]
+
     # Get only files which not processed yet - Recovery Process
-    filtered_filenames = FileUtilsFactory.get_file_timestamp_which_changed_after_last_file(logger, filenames_at_input_path,
+    filtered_filenames = FileUtilsFactory.get_file_timestamp_which_changed_after_last_file(system_logger,
+                                                                                           filenames_at_input_path,
                                                                                            input_path,
-                                                                                           output_filenames)
+                                                                                           supported_output_filenames)
     if not filtered_filenames:
-        logger.info("Not found files to process")
+        system_logger.info(f"Not found files to process, check if {input_path} is not empty, if not all the processed files located at {output_path}")
         exit()
 
     # Divide the filenames into batches
-    group_of_batch_files = [filtered_filenames[i:i + batch_size] for i in range(0, len(filtered_filenames), batch_size)]
+    group_of_batch_files = [filtered_filenames[start_batch_idx:start_batch_idx + batch_size] for start_batch_idx in range(0, len(filtered_filenames), batch_size)]
     for batch_filenames in group_of_batch_files:
         try:
-            logger.info(f"Reading {batch_filenames}")
+            system_logger.info(f"Reading {batch_filenames}")
             df = FileUtilsFactory.load_files_to_df(input_path, batch_filenames, True)
-            df = reformat_and_validate_dataframe(logger, schema_path, df)
-            last_time_file_modified = FileUtils.get_last_file_modification(input_path,batch_filenames)
+            df = reformat_and_validate_dataframe(schema_path, df)
+            last_time_file_modified = FileUtils.get_last_file_timestamp_modification(input_path, batch_filenames)
             df.to_json(f"{output_path}/partition_{last_time_file_modified}.json", orient='records')
+            system_logger.info(f"Batch of filenames {batch_filenames} writen to  {output_path}/partition_{last_time_file_modified}.json ")
+
         except Exception as e:
-            logger.error(e)
+            system_logger.error(e)
 
 
 def unpack_arguments():
