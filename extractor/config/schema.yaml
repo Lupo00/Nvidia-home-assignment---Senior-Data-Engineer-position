@@ -1,0 +1,53 @@
+Part:
+  supported: ["product_id","Product"]
+  size: 20
+  type: str
+  mandatory: True
+part_des:
+  supported: ["product_name"]
+  size: 64
+  type: str
+serial_number:
+  supported: ["SerialNumber","sn"]
+  size: 8
+  type: str
+  mandatory: True
+category:
+  supported: ["Category"]
+  size: 64
+  type: str
+vendor:
+  supported: ["manufacturer"]
+  size: 24
+  type: str
+  mandatory: True
+test_type:
+  supported: ["TestType"]
+  size: 24
+  type: str
+  mandatory: True
+result_code:
+  supported: ["test_result","TestResult"]
+  type: int
+  mandatory: True
+result_description:
+  supported: ["test_result_description","TestResultDesc"]
+  size: 64
+  type: str
+test_date:
+  supported: ["Test Date"]
+  size: 20
+  type: date
+  mandatory: True
+station:
+  supported: ["Station","station_name"]
+  size: 16
+  type: str
+source_file:
+  size: 1000
+  type: str
+  mandatory: True
+source_type:
+  size: 16
+  type: str
+  mandatory: True

@@ -1,0 +1,9 @@
+[2023-08-02 09:14:59] DEBUG : start working on sn112414
+[2023-08-02 09:15:00] INFO: Product:P12345 | SerialNumber:sn112414 | product_name:Widget X | Category: Electronics  | TestType: SPEED | TestResult:100 | TestResultDesc:PASS   | manufacturer:TechCorp  |  Test Date: 2023-08-01 10:15:22 | Station: ST_A | atter_A: 200 |atter_B:155| atter_C:BBB |atter_D:BLUE
+[2023-08-02 09:15:01] DEBUG : end working on sn112414
+[2023-08-02 09:22:01] DEBUG : start working on sn112415
+[2023-08-02 09:22:02] INFO: Product:P67890 | SerialNumber:sn112415 | product_name:Gizmo Y  | Category: Automotive | TestType: HEAT  | TestResult:999 | TestResultDesc:FAILED   |  manufacturer:AutoTech |  Test Date: 2023-08-01 14:17:33 | Station: ST_B | atter_A: 100 |atter_B:150| atter_C:AAA |atter_D:RED
+[2023-08-02 09:22:03] DEBUG : end working on sn112415
+[2023-08-02 09:44:01] DEBUG : start working on sn112416
+[2023-08-02 09:44:02] INFO: Product:P67890 | SerialNumber:sn112416 | product_name:Gizmo Y  | Category: Automotive | TestType: HEAT  | TestResult:100 | TestResultDesc:PASS   |  manufacturer:AutoTech |  Test Date: 2023-08-01 14:18:33 | Station: ST_BXXXXXXXXXXXXXXXXXXXXXXXXXXX | atter_A: 100 |atter_B:150| atter_C:AAA |atter_D:RED
+[2023-08-02 09:44:03] DEBUG : end working on sn112416

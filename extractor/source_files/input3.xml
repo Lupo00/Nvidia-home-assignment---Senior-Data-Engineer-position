@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<products>
+  <product>
+    <product_id>P12345</product_id>
+    <sn>sn112414</sn>
+    <product_name>Widget X</product_name>
+    <category>Electronics</category>
+    <test_type>SPEED</test_type>
+    <test_result>100</test_result>
+    <test_result_description>PASS</test_result_description>
+    <manufacturer>TechCorp</manufacturer>
+    <test_date>2023-08-01 10:15:22</test_date>
+    <station>ST_A</station>
+    <atter_A>200</atter_A>
+    <atter_B>155</atter_B>
+    <atter_C>BBB</atter_C>
+    <atter_D>BLUE</atter_D>
+  </product>
+  <product>
+    <product_id>P67890</product_id>
+    <sn>sn112415</sn>
+    <product_name>Gizmo Y</product_name>
+    <category>Automotive</category>
+    <test_type>HEAT</test_type>
+    <test_result>999</test_result>
+    <test_result_description>FAILD</test_result_description>
+    <manufacturer>AutoTech</manufacturer>
+    <test_date>2023-07-15 14:17:33</test_date>
+    <station>ST_B</station>
+    <atter_A>100</atter_A>
+    <atter_B>150</atter_B>
+    <atter_C>AAA</atter_C>
+    <atter_D>RED</atter_D>
+  </product>
+  <product>
+    <product_id>P12345</product_id>
+    <sn>sn11241432523623626</sn>
+    <product_name>Widget X</product_name>
+    <category>Electronics</category>
+    <test_type>SPEED</test_type>
+    <test_result>100</test_result>
+    <test_result_description>PASS</test_result_description>
+    <manufacturer>TechCorp</manufacturer>
+    <test_date>2023-08-01 10:17:35</test_date>
+    <station>ST_A</station>
+    <atter_A>200</atter_A>
+    <atter_B>155</atter_B>
+    <atter_C>BBB</atter_C>
+    <atter_D>BLUE</atter_D>
+  </product>
+</products>

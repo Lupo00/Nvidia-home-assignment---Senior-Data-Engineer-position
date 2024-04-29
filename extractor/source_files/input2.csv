@@ -1,0 +1,4 @@
+sn,product_id,product_name,category,manufacturer,test_type,test_result,test_result_description,test_date,station_name,atter_A,atter_B,atter_C,atter_D
+sn112414,P12345,Widget X,Electronics,TechCorp,SPEED,100,PASS,2023-08-01 10:15:22,ST_A,200,155,BBB,BLUE
+sn112412345235,P12345,Widget X,Electronics,TechCorp,SPEED,100,PASS,2023-08-01 10:16:22,ST_A,120,150,BBB,BLUE
+sn112415,P67890,Gizmo Y,Automotive,AutoTech,HEAT,9999,FAILED,2023-07-15 14:17:33,ST_B,100,150,AAA,RED
