@@ -81,4 +81,4 @@ def unpack_arguments():
 
 if __name__ == '__main__':
     args = unpack_arguments()
-    loader_service(args.input_path, args.log_file)
+    loader_service(args.input_path)

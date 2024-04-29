@@ -62,7 +62,7 @@ To facilitate usage, a Docker Compose file has been provided. Follow these steps
    
     ```
     docker-compose build
-    docker-compose up [SERVICE_NAME]
+    docker-compose up [SERVICE_NAME]                     ## SERVICE_NAME = [extractor-service, loader-service]
     ```
 
 The outputs will be available at the following locations:
